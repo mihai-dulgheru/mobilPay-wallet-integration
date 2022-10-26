@@ -25,7 +25,24 @@ router.post("/confirm", async (req, res) => {
   const confirmedPayment = await decodeResponse({ env_key, data });
   console.log(confirmedPayment);
 
-  // const mobilpayAction = confirmedPayment.order.mobilpay.action;
+  const action = confirmedPayment.order.mobilpay.action;
+  switch (action) {
+    case "confirmed":
+      console.log("Payment confirmed");
+      break;
+    case "paid":
+      console.log("Payment paid");
+      break;
+    case "paid_pending":
+      console.log("Payment paid pending");
+      break;
+    case "confirmed_pending":
+      console.log("Payment confirmed pending");
+      break;
+    default:
+      console.log("Payment unknown:", action);
+  }
+
   const errorObj = confirmedPayment.order.mobilpay.error;
   let errorMessage = errorObj._;
   let errorCode = errorObj.$.code;
