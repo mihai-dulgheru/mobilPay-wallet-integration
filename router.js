@@ -6,7 +6,7 @@ const router = Router();
 module.exports = router;
 
 router.get("/", (req, res) => {
-  const { orderId } = req.query;
+  const orderId = Date.now();
   const { envKey, envData } = getRequest(orderId);
   // const formData = {
   //   env_key: envKey,
