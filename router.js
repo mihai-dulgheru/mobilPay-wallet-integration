@@ -12,15 +12,16 @@ router.get("/", (req, res) => {
     env_key: envKey,
     data: envData,
   };
-  axios
-    .post(process.env.MOBILPAY_URL, formData, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    })
-    .then((response) => {
-      res.send(response.data);
-    });
+  // axios
+  //   .post(process.env.MOBILPAY_URL, formData, {
+  //     headers: {
+  //       "Content-Type": "application/x-www-form-urlencoded",
+  //     },
+  //   })
+  //   .then((response) => {
+  //     res.send(response.data);
+  //   });
+  return res.send(formData);
 });
 
 router.post("/confirm", (req, res) => {
