@@ -1,4 +1,4 @@
-const axios = require("axios");
+// const axios = require("axios");
 const { Router } = require("express");
 const { getRequest, decodeResponse } = require("./order");
 
@@ -6,7 +6,7 @@ const router = Router();
 module.exports = router;
 
 router.get("/", (req, res) => {
-  const orderId = "123456789";
+  const { orderId } = req.query;
   const { envKey, envData } = getRequest(orderId);
   // const formData = {
   //   env_key: envKey,
