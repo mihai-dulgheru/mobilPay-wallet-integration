@@ -3,6 +3,7 @@
 module.exports = {
   getRequest: getRequest,
   decodeResponse: decodeResponse,
+  getPayment: getPayment,
 };
 
 const rc4 = require("./encrypt.js");
