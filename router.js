@@ -5,7 +5,7 @@ const { getRequest, decodeResponse } = require("./order");
 const router = Router();
 module.exports = router;
 
-router.get("/order", (req, res) => {
+router.get("/", (req, res) => {
   const orderId = req.query.orderId;
   const { envKey, envData } = getRequest(orderId);
   const formData = {
