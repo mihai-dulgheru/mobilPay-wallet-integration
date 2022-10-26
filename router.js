@@ -25,6 +25,21 @@ router.post("/confirm", async (req, res) => {
   const confirmedPayment = await decodeResponse({ env_key, data });
   console.log(confirmedPayment);
 
+  if (confirmedPayment.errorType) {
+    throw new Error(confirmedPayment.errorMessage);
+  }
+
+  const errorObj = confirmedPayment.order.mobilpay.error;
+  let errorMessage = errorObj._;
+  let errorCode = errorObj.$.code;
+
+  res.setHeader("Content-Type", "application/xml");
+  if (parseInt(errorCode) !== 0) {
+    return res.send(
+      `<?xml version="1.0" encoding="utf-8" ?><crc error_code="${errorCode}">${errorMessage}</crc>`
+    );
+  }
+
   const action = confirmedPayment.order.mobilpay.action;
   switch (action) {
     case "confirmed":
@@ -43,16 +58,6 @@ router.post("/confirm", async (req, res) => {
       console.log("Payment unknown:", action);
   }
 
-  const errorObj = confirmedPayment.order.mobilpay.error;
-  let errorMessage = errorObj._;
-  let errorCode = errorObj.$.code;
-
-  res.setHeader("Content-Type", "application/xml");
-  if (parseInt(errorCode) !== 0) {
-    return res.send(
-      `<?xml version="1.0" encoding="utf-8" ?><crc error_code="${errorCode}">${errorMessage}</crc>`
-    );
-  }
   return res.send(
     `<?xml version="1.0" encoding="utf-8" ?><crc>${errorMessage}</crc>`
   );
