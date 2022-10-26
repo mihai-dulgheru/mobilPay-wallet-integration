@@ -30,15 +30,27 @@ router.get("/", (req, res) => {
   `);
 });
 
-router.post("/confirm", (req, res) => {
+router.post("/confirm", async (req, res) => {
   const { env_key, data } = req.body;
-  decodeResponse(env_key, data)
-    .then((response) => {
-      return res.send(response);
-    })
-    .catch((err) => {
-      return res.send(err);
-    });
+  console.log({ env_key, data });
+
+  const confirmedPayment = await decodeResponse({ env_key, data });
+  console.log(confirmedPayment);
+
+  const mobilpayAction = confirmedPayment.order.mobilpay.action;
+  const errorObj = confirmedPayment.order.mobilpay.error;
+  let errorMessage = errorObj._;
+  let errorCode = errorObj.$.code;
+
+  res.setHeader("Content-Type", "application/xml");
+  if (parseInt(errorCode) !== 0) {
+    return res.send(
+      `<?xml version="1.0" encoding="utf-8" ?><crc error_code="${errorCode}">${errorMessage}</crc>`
+    );
+  }
+  return res.send(
+    `<?xml version="1.0" encoding="utf-8" ?><crc>${errorMessage}</crc>`
+  );
 });
 
 router.get("/return", (req, res) => {
