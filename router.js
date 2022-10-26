@@ -6,12 +6,12 @@ const router = Router();
 module.exports = router;
 
 router.get("/", (req, res) => {
-  const orderId = req.query.orderId;
+  const orderId = "123456789";
   const { envKey, envData } = getRequest(orderId);
-  const formData = {
-    env_key: envKey,
-    data: envData,
-  };
+  // const formData = {
+  //   env_key: envKey,
+  //   data: envData,
+  // };
   // axios
   //   .post(process.env.MOBILPAY_URL, formData, {
   //     headers: {
@@ -21,7 +21,13 @@ router.get("/", (req, res) => {
   //   .then((response) => {
   //     res.send(response.data);
   //   });
-  return res.send(formData);
+  return res.send(`
+    <form action="${process.env.MOBILPAY_URL}" method="post">
+      <input type="hidden" name="env_key" value="${envKey}" />
+      <input type="hidden" name="data" value="${envData}" />
+      <input type="submit" value="Pay" />
+    </form>
+  `);
 });
 
 router.post("/confirm", (req, res) => {
@@ -33,4 +39,9 @@ router.post("/confirm", (req, res) => {
     .catch((err) => {
       return res.send(err);
     });
+});
+
+router.get("/return", (req, res) => {
+  const { orderId } = req.query;
+  return res.send(`Order ${orderId} was paid`);
 });
